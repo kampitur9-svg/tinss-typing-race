@@ -1,0 +1,2291 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TINSS IT</title>
+  <style>
+    :root {
+      --bg: #11151c;
+      --bg-2: #171d27;
+      --panel: rgba(29,33,41,0.96);
+      --panel-strong: rgba(35,39,48,0.96);
+      --panel-alt: rgba(28,31,38,0.96);
+      --line: rgba(255,255,255,0.08);
+      --text: #edf2ff;
+      --muted: #aeb7ca;
+      --soft: #dfe6f8;
+      --nav: #1e3c7d;
+      --nav-2: #1f3e86;
+      --blue: #3f82f8;
+      --blue-2: #4c8efc;
+      --green: #1ca75e;
+      --pink: #ea5dac;
+      --navblue: #2b6fe4;
+      --dark: #0f1722;
+      --shadow: rgba(0,0,0,0.2);
+      --success: #81f0ab;
+      --danger: #ff7987;
+      --warning: #ffda6d;
+    }
+
+    * { box-sizing: border-box; }
+    body { -webkit-user-select: none; user-select: none; }
+    input, textarea, select { -webkit-user-select: text; user-select: text; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-width: 320px;
+      min-height: 100vh;
+      background: linear-gradient(180deg, #0b0f17 0%, #131b26 100%);
+      color: var(--text);
+      font-family: Inter, "Segoe UI", sans-serif;
+    }
+    button, input, a { font: inherit; }
+    button { cursor: pointer; }
+    a { color: inherit; text-decoration: none; }
+    button:disabled { cursor: not-allowed; opacity: 0.55; }
+    button:focus-visible,
+    a:focus-visible {
+      outline: 2px solid #dce8ff;
+      outline-offset: 3px;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      height: 78px;
+      padding: 0 22px 0 28px;
+      background: linear-gradient(180deg, var(--nav) 0%, var(--nav-2) 100%);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      box-shadow: inset 0 -1px 0 rgba(255,255,255,0.06);
+    }
+
+    .brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      min-width: 0;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text);
+      font-size: 1.02rem;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      background: linear-gradient(180deg, #fdfdff 0%, #e3ebff 100%);
+      color: #1f3b75;
+      font-size: 0.96rem;
+      font-weight: 900;
+      letter-spacing: -0.18em;
+      box-shadow: inset 0 -3px 7px rgba(0,0,0,0.12);
+    }
+    .brand-name span { color: #dce8ff; }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .nav-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 32px;
+      padding: 0 12px;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      color: rgba(255,255,255,0.8);
+      font-size: 0.7rem;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+      transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+    }
+    .nav-link.active,
+    .nav-link:hover {
+      background: rgba(255,255,255,0.08);
+      border-color: rgba(255,255,255,0.12);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+    .nav-link .icon { font-size: 0.9rem; }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+    .search {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: min(250px, 26vw);
+      min-width: 180px;
+      height: 38px;
+      padding: 0 12px 0 14px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.04);
+      color: rgba(255,255,255,0.7);
+    }
+    .search input {
+      width: 100%;
+      border: 0;
+      background: transparent;
+      color: var(--text);
+      outline: none;
+      font-size: 0.82rem;
+    }
+    .search input::placeholder { color: rgba(255,255,255,0.62); }
+    .search-icon { opacity: 0.9; }
+
+    .header-btn {
+      height: 34px;
+      padding: 0 14px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(255,255,255,0.06);
+      color: #f2f6ff;
+      font-weight: 700;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+    .header-btn:hover { background: rgba(255,255,255,0.12); transform: translateY(-1px); }
+    .header-btn.primary {
+      background: linear-gradient(180deg, #fdfdff 0%, #edf2ff 100%);
+      color: #1f3c7a;
+      border-color: rgba(255,255,255,0.6);
+      box-shadow: 0 12px 22px rgba(81,112,207,0.22);
+    }
+
+    .page {
+      width: min(1240px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 40px 0 32px;
+      scroll-margin-top: 90px;
+    }
+    #clash, #public-parties, #ranked, #discuss { scroll-margin-top: 90px; }
+    .dashboard {
+      display: grid;
+      grid-template-columns: 1.05fr 1.2fr 1.05fr;
+      gap: 24px;
+      align-items: start;
+    }
+    .column { display: flex; flex-direction: column; gap: 20px; }
+
+    .panel {
+      border-radius: 21px;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(26,30,38,0.96), rgba(21,25,32,0.96));
+      box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+      overflow: hidden;
+    }
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      min-height: 64px;
+      padding: 0 18px 0 16px;
+      background: linear-gradient(180deg, #4f87ff 0%, #3a79ee 100%);
+      color: #fff;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      font-size: 1.1rem;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 30px;
+      height: 26px;
+      padding: 0 8px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.14);
+      font-size: 0.7rem;
+      font-weight: 800;
+    }
+    .panel-body {
+      padding: 18px;
+      background: rgba(25,29,36,0.96);
+    }
+    .tiny-label {
+      margin: 0 0 7px;
+      color: var(--muted);
+      font-size: 0.68rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      font-weight: 800;
+    }
+    .time-remaining {
+      margin: 0;
+      color: var(--text);
+      font-size: 1.1rem;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+    }
+    .muted-copy {
+      margin: 12px 0 0;
+      color: rgba(220,227,240,0.8);
+      line-height: 1.7;
+      font-size: 0.98rem;
+    }
+
+    .list-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 12px 16px 16px;
+      background: rgba(25,29,36,0.96);
+    }
+    .item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 8px 0;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .item:first-child { border-top: 0; }
+    .dot {
+      width: 18px;
+      height: 18px;
+      display: inline-grid;
+      place-items: center;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.82);
+      font-size: 0.62rem;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .item strong {
+      display: block;
+      font-size: 0.98rem;
+      line-height: 1.38;
+      color: var(--text);
+    }
+    .item small {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 0.7rem;
+      letter-spacing: 0.02em;
+    }
+
+    .global-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      min-height: 44px;
+      cursor: pointer;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: linear-gradient(180deg, rgba(60,66,76,0.96), rgba(45,50,60,0.96));
+      color: #edf3ff;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      box-shadow: 0 18px 28px rgba(0,0,0,0.15);
+      transition: filter 0.18s ease, transform 0.18s ease;
+    }
+    .global-link:hover { filter: brightness(1.08); }
+    .global-link .globe { font-size: 0.9rem; }
+
+    .profile-card {
+      padding: 14px 16px 16px;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: rgba(26,30,38,0.96);
+      box-shadow: 0 14px 24px rgba(0,0,0,0.08);
+    }
+    .profile-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .profile-sticker {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      background: linear-gradient(180deg, #f7d7a2 0%, #d69749 100%);
+      color: #fff;
+      font-size: 1.2rem;
+      box-shadow: inset 0 -4px 9px rgba(0,0,0,0.12);
+    }
+    .profile-rank {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 66px;
+      height: 28px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.06);
+      color: var(--muted);
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .profile-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin: 8px 0 12px;
+    }
+    .avatar {
+      width: 54px;
+      height: 54px;
+      display: grid;
+      place-items: center;
+      border-radius: 15px;
+      background: linear-gradient(180deg, #f0c88a 0%, #d48b2e 100%);
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 900;
+      box-shadow: inset 0 -4px 10px rgba(0,0,0,0.15);
+    }
+    .user-name-input {
+      width: 100%;
+      border: none;
+      background: transparent;
+      color: var(--text);
+      font-size: 1.07rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      padding: 0;
+      outline: none;
+    }
+    .profile-sub {
+      margin: 4px 0 0;
+      color: rgba(232,237,247,0.7);
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .profile-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      color: rgba(228,233,243,0.78);
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .profile-line strong { color: #fff; }
+
+    .action-card {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      min-height: 100px;
+      padding: 0 18px 0 16px;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 22px;
+      color: white;
+      overflow: hidden;
+      box-shadow: 0 18px 28px rgba(0,0,0,0.16);
+      transition: transform 0.2s ease, filter 0.2s ease;
+      animation: riseIn 0.5s ease both;
+    }
+    .action-card:hover {
+      transform: translateY(-3px);
+      filter: brightness(1.04);
+    }
+    @keyframes riseIn {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .action-card.blue { background: linear-gradient(180deg, #3b83f5 0%, #2c71e9 100%); }
+    .action-card.green { background: linear-gradient(180deg, #18a95f 0%, #12934f 100%); }
+    .action-card.pink { background: linear-gradient(180deg, #e75aa3 0%, #d24e90 100%); }
+
+    .card-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      min-width: 0;
+    }
+    .sticker {
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.12);
+      color: white;
+      font-size: 1.3rem;
+      box-shadow: inset 0 -3px 10px rgba(0,0,0,0.08);
+    }
+    .card-title {
+      margin: 0;
+      font-size: clamp(1.8rem, 2vw, 2.6rem);
+      line-height: 1.08;
+      letter-spacing: -0.06em;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+    .card-sub {
+      margin: 0;
+      font-size: clamp(1.2rem, 1.6vw, 1.7rem);
+      line-height: 1.2;
+      letter-spacing: -0.04em;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+    .arrow {
+      font-size: 2.5rem;
+      line-height: 1;
+      opacity: 0.9;
+      font-weight: 300;
+    }
+
+    .feed-panel {
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: rgba(25,29,36,0.96);
+      box-shadow: 0 14px 24px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+    .feed-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      min-height: 64px;
+      padding: 0 18px 0 16px;
+      background: linear-gradient(180deg, #4d8bff 0%, #3679ee 100%);
+      color: #fff;
+      font-weight: 800;
+      font-size: 1.1rem;
+    }
+    .feed-header a {
+      color: rgba(255,255,255,0.85);
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .feed-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 12px 12px 16px;
+    }
+    .feed-item {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px 12px;
+      padding: 10px 10px 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.04);
+      background: rgba(255,255,255,0.02);
+    }
+    .feed-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: rgba(235,240,247,0.74);
+      font-size: 0.7rem;
+      letter-spacing: 0.02em;
+    }
+    .mini-tag {
+      width: 18px;
+      height: 18px;
+      display: inline-grid;
+      place-items: center;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.06);
+      font-size: 0.62rem;
+      font-weight: 700;
+      color: rgba(255,255,255,0.8);
+    }
+    .feed-content {
+      margin: 0;
+      color: #edf2ff;
+      font-size: 0.8rem;
+      line-height: 1.6;
+    }
+    .feed-meta {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 0.62rem;
+      letter-spacing: 0.04em;
+    }
+    .feed-side {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: rgba(255,255,255,0.72);
+      font-size: 0.7rem;
+      white-space: nowrap;
+      padding-top: 4px;
+    }
+    .heart { font-size: 0.9rem; }
+
+    .matches-btn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-height: 52px;
+      padding: 0 15px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: linear-gradient(180deg, #4d88ff 0%, #3a7ce7 100%);
+      color: #fff;
+      font-size: 1.05rem;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      box-shadow: 0 18px 26px rgba(63,125,244,0.22);
+      transition: filter 0.18s ease, transform 0.18s ease;
+    }
+    .matches-btn:hover,
+    .primary-action:hover { filter: brightness(1.08); }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      z-index: 40;
+      padding: 18px;
+      background: rgba(9,13,20,0.62);
+      backdrop-filter: blur(5px);
+    }
+    .modal.hidden { display: none; }
+    .modal-card {
+      width: min(560px, 100%);
+      border-radius: 22px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(17,23,31,0.98);
+      box-shadow: 0 30px 60px rgba(0,0,0,0.42);
+      overflow: hidden;
+    }
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-height: 68px;
+      padding: 0 20px;
+      background: linear-gradient(180deg, #2d5ee6 0%, #1d70db 100%);
+      color: #fff;
+      font-weight: 800;
+      font-size: 1.18rem;
+    }
+    .close-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 0;
+      background: rgba(255,255,255,0.12);
+      color: #fff;
+      font-size: 1.4rem;
+      line-height: 1;
+    }
+    .modal-body { padding: 18px 20px 20px; }
+    .modal-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+    .opponent-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-height: 56px;
+      padding: 8px 10px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.06);
+      background: rgba(255,255,255,0.03);
+      cursor: pointer;
+      transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+      width: 100%;
+      color: inherit;
+      font: inherit;
+      text-align: left;
+    }
+    .opponent-card:hover {
+      transform: translateY(-1px);
+      border-color: rgba(95,141,255,0.8);
+    }
+    .opponent-card.active {
+      border-color: rgba(95,141,255,0.8);
+      background: rgba(77,137,255,0.1);
+    }
+    .opp-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .opp-avatar {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      background: linear-gradient(180deg, #f5dc9e 0%, #c78d34 100%);
+      color: #fff;
+      font-size: 0.82rem;
+      font-weight: 900;
+    }
+    .opp-name,
+    .opp-score { display: block; }
+    .opp-name { font-weight: 700; }
+    .opp-score {
+      color: var(--muted);
+      font-size: 0.72rem;
+      letter-spacing: 0.04em;
+    }
+    .primary-action {
+      width: 100%;
+      min-height: 42px;
+      margin-top: 16px;
+      border: 0;
+      border-radius: 12px;
+      background: linear-gradient(180deg, #4b86ff 0%, #396fe8 100%);
+      color: #fff;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      transition: filter 0.18s ease, transform 0.18s ease;
+    }
+    .primary-action:active,
+    .matches-btn:active { transform: translateY(1px); }
+
+    .like-btn {
+      display: grid;
+      place-items: center;
+      width: 30px;
+      height: 30px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: inherit;
+      font-size: 0.9rem;
+      line-height: 1;
+    }
+    .like-btn[aria-pressed="true"] { color: #ff819f; }
+
+    .typing-shell {
+      display: none;
+      margin-top: 14px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(12,17,25,0.95);
+      overflow: hidden;
+    }
+    .typing-shell.visible { display: block; }
+    .typing-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-height: 54px;
+      padding: 0 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      background: rgba(255,255,255,0.02);
+      color: rgba(255,255,255,0.74);
+      font-size: 0.74rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .typing-body { padding: 18px; }
+    .typing-sentence {
+      min-height: 120px;
+      padding: 14px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.06);
+      background: rgba(255,255,255,0.02);
+      color: rgba(233,238,246,0.94);
+      font-family: "SFMono-Regular", Consolas, monospace;
+      font-size: 1rem;
+      line-height: 1.8;
+      letter-spacing: 0.01em;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    .typing-sentence .correct { color: var(--success); }
+    .typing-sentence .wrong { color: var(--danger); background: rgba(255,119,135,0.1); }
+    .typing-sentence .current { background: rgba(77,137,255,0.28); box-shadow: inset 0 0 0 1px rgba(77,137,255,0.7); }
+    .typing-input {
+      width: 100%;
+      min-height: 52px;
+      margin-top: 16px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.02);
+      color: var(--text);
+      padding: 12px 14px;
+      font-size: 1rem;
+      outline: none;
+      resize: none;
+    }
+    .stats-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 0.76rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .stats-row strong { color: #fff; }
+
+    .dashboard[hidden],
+    .party-screen[hidden],
+    .party-screen-view[hidden] { display: none; }
+    .party-screen {
+      margin: 0 auto;
+      padding: 18px 0 32px;
+    }
+    .party-screen-view {
+      display: grid;
+      grid-template-columns: minmax(210px, 0.9fr) minmax(0, 1.65fr) minmax(210px, 0.9fr);
+      align-items: start;
+      gap: 18px;
+    }
+    .party-side,
+    .party-center {
+      min-width: 0;
+    }
+    .party-side {
+      display: grid;
+      gap: 16px;
+    }
+    .party-panel,
+    .party-snippet-panel {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: linear-gradient(180deg, rgba(29,33,41,0.98), rgba(21,25,32,0.98));
+      box-shadow: 0 12px 30px rgba(0,0,0,0.16);
+    }
+    .party-panel-header,
+    .party-snippet-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-height: 48px;
+      padding: 0 16px;
+      background: linear-gradient(180deg, #4f87ff 0%, #3a79ee 100%);
+      color: #fff;
+      font-weight: 800;
+    }
+    .party-panel-body { padding: 16px; }
+    .party-ready {
+      display: grid;
+      gap: 8px;
+      min-height: 112px;
+      place-content: center;
+      border: 2px solid #209743;
+      border-radius: 18px;
+      background: linear-gradient(180deg, #13882e, #087522);
+      color: #fff;
+      text-align: center;
+    }
+    .party-ready strong { font-size: 1.3rem; }
+    .party-ready span { color: #dcffe2; }
+    .party-room-code {
+      margin: 4px 0 0;
+      color: #fff;
+      font-family: "SFMono-Regular", Consolas, monospace;
+      font-size: clamp(1.7rem, 3vw, 2.2rem);
+      font-weight: 900;
+      letter-spacing: 0.18em;
+      text-align: center;
+    }
+    .party-room-hint,
+    .party-helper {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.6;
+    }
+    .party-actions {
+      display: grid;
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .party-secondary-action {
+      width: 100%;
+      min-height: 40px;
+      padding: 8px 12px;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 11px;
+      background: rgba(255,255,255,0.06);
+      color: #f2f6ff;
+      font-weight: 700;
+    }
+    .party-secondary-action:hover { background: rgba(255,255,255,0.12); }
+    .party-snippet-header { min-height: 48px; }
+    .party-snippet-content {
+      min-height: 240px;
+      max-height: 52vh;
+      overflow: auto;
+      padding: 20px;
+      color: #edf2ff;
+      font-size: 1rem;
+      line-height: 1.85;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    .party-snippet-content .correct { color: var(--success); }
+    .party-snippet-content .wrong { color: var(--danger); background: rgba(255,119,135,0.1); }
+    .party-snippet-content .current { background: rgba(77,137,255,0.28); }
+    .party-start-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 16px;
+      padding: 10px;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 15px;
+      background: rgba(255,255,255,0.03);
+    }
+    .party-start-bar .primary-action { flex: 0 0 auto; width: auto; min-width: 150px; margin: 0; padding: 0 16px; }
+    .party-start-hint { color: var(--muted); font-size: 0.9rem; }
+    .party-field {
+      display: grid;
+      gap: 7px;
+      color: var(--soft);
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+    .party-field input,
+    .party-field select {
+      width: 100%;
+      min-height: 42px;
+      padding: 0 12px;
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 10px;
+      background: #171d27;
+      color: var(--text);
+      font: inherit;
+    }
+    .party-player-list { display: grid; }
+    .party-player-row {
+      display: grid;
+      grid-template-columns: 30px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 9px;
+      min-height: 52px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .party-player-row:last-child { border-bottom: 0; }
+    .party-player-rank {
+      color: #93a2bd;
+      font-variant-numeric: tabular-nums;
+      text-align: center;
+    }
+    .party-player-name {
+      overflow: hidden;
+      color: var(--text);
+      font-size: 0.92rem;
+      font-weight: 800;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .party-player-meta {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 0.76rem;
+    }
+    .party-player-wpm {
+      color: #f1f5ff;
+      font-variant-numeric: tabular-nums;
+      font-weight: 800;
+      text-align: right;
+    }
+    .party-progress-track {
+      height: 5px;
+      margin-top: 6px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.1);
+    }
+    .party-progress-fill {
+      height: 100%;
+      border-radius: inherit;
+      background: #49d36f;
+      transition: width 0.18s ease;
+    }
+    .party-typing-input {
+      width: 100%;
+      min-height: 92px;
+      margin-top: 16px;
+      padding: 12px 14px;
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 13px;
+      background: rgba(10,14,21,0.9);
+      color: var(--text);
+      font: inherit;
+      line-height: 1.6;
+      resize: vertical;
+    }
+    .party-typing-input:focus-visible {
+      outline: 2px solid #74a3ff;
+      outline-offset: 2px;
+    }
+    .party-stats {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+    .party-stats strong { color: #fff; font-variant-numeric: tabular-nums; }
+
+    .toast {
+      position: fixed;
+      right: 22px;
+      bottom: 20px;
+      z-index: 60;
+      min-width: 220px;
+      max-width: 300px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(19,24,34,0.96);
+      color: #fff;
+      box-shadow: 0 20px 36px rgba(0,0,0,0.25);
+    }
+    .toast.hidden { display: none; }
+
+    @media (max-width: 980px) {
+      .dashboard { grid-template-columns: 1fr; }
+      .party-screen-view { grid-template-columns: 1fr; }
+      .party-side:last-child { grid-row: 3; }
+      .topbar { width: 100%; min-width: 0; flex-wrap: wrap; height: auto; padding-top: 12px; padding-bottom: 12px; }
+      .brand-wrap { width: 100%; justify-content: space-between; }
+      .topbar-right { width: 100%; min-width: 0; justify-content: space-between; flex-wrap: wrap; }
+      .search { width: 100%; min-width: 0; flex: 0 0 100%; }
+    }
+
+    @media (max-width: 620px) {
+      .page { width: min(100% - 18px, 700px); }
+      .nav { display: none; }
+      .topbar { padding-left: 16px; padding-right: 16px; }
+      .header-btn { padding: 0 10px; }
+      .card-title, .card-sub { white-space: normal; }
+      .modal-grid { grid-template-columns: 1fr; }
+      .page, #clash, #public-parties, #ranked, #discuss { scroll-margin-top: 170px; }
+      .party-screen { padding-top: 14px; }
+      .party-snippet-content { min-height: 180px; max-height: 42vh; padding: 15px; font-size: 0.92rem; }
+      .party-start-bar { align-items: stretch; flex-direction: column; }
+      .party-start-bar .primary-action { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand-wrap">
+      <a href="#home" class="brand" aria-label="TINSS IT home">
+        <span class="brand-mark">t.</span>
+        <span class="brand-name">TINSS <span>IT</span></span>
+      </a>
+
+      <nav class="nav" aria-label="Main menu">
+        <a href="#home" class="nav-link active"><span class="icon">⌂</span>Home</a>
+        <a href="#discuss" class="nav-link"><span class="icon">◌</span>Discuss</a>
+        <a href="#clash" class="nav-link"><span class="icon">⚔</span>Clash</a>
+        <a href="#ranked" class="nav-link"><span class="icon">▣</span>Ranked</a>
+      </nav>
+    </div>
+
+    <div class="topbar-right">
+      <label class="search" aria-label="Search players">
+        <span class="search-icon">⌕</span>
+        <input id="searchInput" type="text" placeholder="Search players" aria-label="Search players">
+      </label>
+      <button type="button" class="header-btn" id="playFriendsBtn">Play friends</button>
+      <button type="button" class="header-btn" id="loginBtn">Log in</button>
+      <button type="button" class="header-btn primary" id="signupBtn">Sign up</button>
+    </div>
+  </header>
+
+  <main class="page" id="home">
+    <div class="dashboard">
+      <div class="column">
+        <section class="panel" id="clash">
+          <div class="panel-header">
+            <span>Daily Clash</span>
+            <span class="badge">N 6</span>
+          </div>
+          <div class="panel-body">
+            <div class="tiny-label">Opens in</div>
+            <p class="time-remaining">3 days</p>
+            <p class="muted-copy">Every day, everyone races the same quote, and your best race counts. Your best days add up to standings for the week and the month.</p>
+          </div>
+        </section>
+
+        <section class="panel" id="public-parties">
+          <div class="panel-header">
+            <span>Public Parties</span>
+          </div>
+          <div class="list-group">
+            <div class="item"><span class="dot">◔</span><div><strong>Recently closed</strong></div></div>
+            <div class="item"><span class="dot">•</span><div><strong>You should lowkey join.</strong><small>66 races • Closed 2h ago</small></div></div>
+            <div class="item"><span class="dot">•</span><div><strong>pls join we are bad</strong><small>10 races • Closed 2h ago</small></div></div>
+            <div class="item"><span class="dot">•</span><div><strong>Party #9582</strong><small>8 races • Closed 2h ago</small></div></div>
+          </div>
+        </section>
+
+        <button type="button" class="global-link" id="globalRacesBtn"><span class="globe">◌</span>Global races</button>
+      </div>
+
+      <div class="column">
+        <div class="profile-card" id="ranked">
+          <div class="profile-top">
+            <div class="profile-sticker">✦</div>
+            <div class="profile-rank">19 / 20</div>
+          </div>
+
+          <div class="profile-row">
+            <div class="avatar">I</div>
+            <div style="flex:1; min-width:0;">
+              <input id="profileName" class="user-name-input" type="text" value="Ismingiz" aria-label="User name" maxlength="20">
+              <p class="profile-sub">Your name in races</p>
+            </div>
+          </div>
+
+          <div class="profile-line">
+            <span>Best race</span>
+            <strong>94 WPM</strong>
+          </div>
+        </div>
+
+        <button class="action-card blue" type="button" data-mode="quick">
+          <div class="card-left">
+            <span class="sticker">⚡</span>
+            <div>
+              <p class="card-title">Quick Play</p>
+              <p class="card-sub">Race other players</p>
+            </div>
+          </div>
+          <span class="arrow">→</span>
+        </button>
+
+        <button class="action-card green" type="button" data-mode="solo">
+          <div class="card-left">
+            <span class="sticker">◔</span>
+            <div>
+              <p class="card-title">Solo Play</p>
+              <p class="card-sub">Practice on your own</p>
+            </div>
+          </div>
+          <span class="arrow">→</span>
+        </button>
+
+        <button class="action-card pink" type="button" data-mode="party">
+          <div class="card-left">
+            <span class="sticker">◍</span>
+            <div>
+              <p class="card-title">Private Party</p>
+              <p class="card-sub">Race your friends</p>
+            </div>
+          </div>
+          <span class="arrow">→</span>
+        </button>
+      </div>
+
+      <div class="column">
+        <section class="feed-panel" id="discuss">
+          <div class="feed-header">
+            <span>Recent Posts</span>
+            <a href="#discuss" id="viewAllPosts">View all</a>
+          </div>
+          <div class="feed-list">
+            <article class="feed-item">
+              <div>
+                <div class="feed-head"><span class="mini-tag">U</span> unbeatable_x • 8h ago</div>
+                <p class="feed-content">discord — unable to accept invite</p>
+                <div class="feed-meta"><span>0</span><span>•</span><span>1</span></div>
+              </div>
+              <div class="feed-side"><button type="button" class="like-btn" aria-label="Like post" aria-pressed="false">♡</button><span class="like-count">1</span></div>
+            </article>
+
+            <article class="feed-item">
+              <div>
+                <div class="feed-head"><span class="mini-tag">I</span> last comment 1h ago</div>
+                <p class="feed-content">lol</p>
+                <div class="feed-meta"><span>1</span><span>•</span><span>1</span></div>
+              </div>
+              <div class="feed-side"><button type="button" class="like-btn" aria-label="Like post" aria-pressed="false">♡</button><span class="like-count">1</span></div>
+            </article>
+
+            <article class="feed-item">
+              <div>
+                <div class="feed-head"><span class="mini-tag">I</span> showlow • 3h ago</div>
+                <p class="feed-content">Show whether or not someone in your race is a bot or not</p>
+                <div class="feed-meta"><span>2</span><span>•</span><span>1</span></div>
+              </div>
+              <div class="feed-side"><button type="button" class="like-btn" aria-label="Like post" aria-pressed="false">♡</button><span class="like-count">2</span></div>
+            </article>
+
+            <article class="feed-item">
+              <div>
+                <div class="feed-head"><span class="mini-tag">E</span> Ethanox • 8h ago</div>
+                <p class="feed-content">Feature suggestion: focus mode</p>
+                <div class="feed-meta"><span>0</span><span>•</span><span>14</span></div>
+              </div>
+              <div class="feed-side"><button type="button" class="like-btn" aria-label="Like post" aria-pressed="false">♡</button><span class="like-count">2</span></div>
+            </article>
+          </div>
+        </section>
+
+        <button type="button" class="matches-btn" id="recentMatchesBtn">
+          <span>Recent Matches</span>
+          <span>→</span>
+        </button>
+      </div>
+    </div>
+    <section class="party-screen" id="partyScreen" hidden aria-live="polite"></section>
+  </main>
+
+  <div id="modal" class="modal hidden" aria-hidden="true">
+    <div class="modal-card">
+      <div class="modal-header">
+        <span id="modalTitle">Race lobby</span>
+        <button type="button" class="close-btn" id="closeModal" aria-label="Close">×</button>
+      </div>
+      <div class="modal-body" id="modalContent"></div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+
+  <script>
+    const navLinks = document.querySelectorAll('.nav-link');
+    navLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        navLinks.forEach(item => item.classList.toggle('active', item === link));
+      });
+    });
+
+    const modal = document.getElementById('modal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalContent = document.getElementById('modalContent');
+    const toast = document.getElementById('toast');
+    const profileName = document.getElementById('profileName');
+    let activeChallengeTimer = null;
+
+    const storedName = localStorage.getItem('tinssName') || 'Ismingiz';
+    profileName.value = storedName;
+    document.querySelector('.avatar').textContent = storedName.charAt(0).toUpperCase();
+
+    const defaultPassages = [
+      'Speed comes from rhythm, focus, and calm hands. Keep your shoulders relaxed and let each finger move with intention while your eyes stay on the text ahead.',
+      'Practice builds confidence when you stay consistent, keep your posture good, and make a clear decision before every keystroke to avoid unnecessary errors.',
+      'Choose a quiet place, breathe slowly, and treat each sentence like a small challenge that teaches control, patience, and a steadier rhythm over time.',
+      'Typing is not just about speed. It is about precision, calm motion, and the discipline to stay sharp when your hands start to tire.'
+    ];
+    let lastDefaultPassage = '';
+
+    let activeOpponent = 'Ariya';
+    const partyDifficultyLabels = { easy: 'Oson', medium: "O'rtacha", hard: 'Qiyin' };
+    const partyPassages = {
+      easy: [
+        "Har bir mashq yangi imkoniyat beradi.",
+        "Sekin va aniq yozish tezlikni oshiradi.",
+        "Diqqatni jamla va poygani boshlagin."
+      ],
+      medium: [
+        "Bugun yangi mahoratni sinab ko'ramiz.",
+        "Aniq yozish tezlikdan ham muhimroq.",
+        "Har bir xato keyingi mashqqa saboq.",
+        "Do'stlar bilan poyga yanada qiziq.",
+        "Ritmni top va klaviaturaga ishon.",
+        "Ko'zing matnda, barmoqlaring tugmada.",
+        "Shoshilmasdan to'g'ri yozishga harakat qil.",
+        "Yaxshi natija muntazam mashqdan boshlanadi.",
+        "Birga o'ynang va natijalarni solishtiring.",
+        "Marraga yetguncha diqqatni yo'qotma."
+      ],
+      hard: [
+        "Tonggi shabada deraza pardalarini sekin silkitdi.",
+        "Uzoq safar uchun xaritani oldindan tayyorladik.",
+        "Kutubxonada sokinlik va tartib hukm surardi.",
+        "Yangi g'oyalar jasorat bilan sinab ko'rilganda o'sadi.",
+        "Daraxt soyasi issiq tush paytida salqinlik berdi.",
+        "Ustoz har bir savolga sabr bilan javob qaytardi.",
+        "Kichik qadamlar katta marralarga olib boradi.",
+        "Bulutlar orasidan quyosh nuri ko'rina boshladi.",
+        "Jamoa musobaqaga puxta reja bilan tayyorlandi.",
+        "Eski daftar ichidan qiziqarli hikoya topildi.",
+        "Tog' yo'li burilishlar bilan yuqoriga ko'tarildi.",
+        "Ochiq fikr yangi bilimlarni tezroq o'zlashtiradi.",
+        "Bekatda kelayotgan poyezdni yo'lovchilar kutishdi.",
+        "Samarali mashq uchun tinch joy tanlab ol.",
+        "Har bir belgi matnning ma'nosini o'zgartirishi mumkin.",
+        "Do'stlar natijalarni kulgi bilan taqqosladilar.",
+        "Kechki yomg'ir ko'chalarga yoqimli hid taratdi.",
+        "Mehnat bilan erishilgan yutuq ko'proq qadrlanadi.",
+        "Uzoqdagi chiroqlar tun qorong'usini yoritib turardi.",
+        "Yozuvchi yangi bobni bir nafasda tugatdi.",
+        "Tartibli ish jarayoni xatolarni kamaytiradi.",
+        "Daryo bo'yida mayin shamol esib turardi.",
+        "Qiziqish va izlanish bilimni yanada mustahkamlaydi.",
+        "Jamoaviy o'yinda hamma o'z hissasini qo'shadi.",
+        "Bugungi mashq ertangi natijaga zamin yaratadi.",
+        "Sayohatchilar manzilga yetish uchun yo'l so'rashdi.",
+        "Aniqlikni saqlab, qulay tezlikda davom et.",
+        "Yangi sahifa oldingisidan ham qiziqarli chiqdi.",
+        "Har bir poygada o'z rekordingni yangilash mumkin.",
+        "Marraga yetganingda natijangni do'stlaring bilan bo'lish."
+      ]
+    };
+    const partyPassagePools = {
+      easy: [
+        ...partyPassages.easy,
+        "Bugun o'zingga yangi maqsad qo'y.",
+        "Mashqni boshlashga tayyormisan?",
+        "Har bir tugmani aniq bos.",
+        "Ritm bilan yozish maroqli.",
+        "Yaxshi odat har kuni shakllanadi.",
+        "Poygada do'stingni ortda qoldir.",
+        "Bir qatorni tugat, keyingisiga o't.",
+        "Xotirjam bo'l va davom et.",
+        "To'g'ri yoz, keyin tezlash.",
+        "Harakat qilsang natija yaxshilanadi.",
+        "Bugun ham mashq uchun yaxshi kun."
+      ],
+      medium: [
+        ...partyPassages.medium,
+        "Matnni diqqat bilan o'qib, so'ng yoz.",
+        "Har bir ishtirokchi o'z tezligini sinaydi.",
+        "Bir xil ritm aniqlikni saqlashga yordam beradi.",
+        "Yangi marraga erishish uchun mashq qil.",
+        "Tartibli yozish xatolar sonini kamaytiradi.",
+        "O'zingga qulay holatda o'tirishni unutmang.",
+        "Qadam-baqadam oldinga yurish muhim.",
+        "Do'stlar bilan natijani solishtirish qiziqarli."
+      ],
+      hard: [
+        ...partyPassages.hard,
+        "Mahorat muntazam mashq va sabr bilan rivojlanadi.",
+        "Birgalikdagi bellashuv do'stlarni yanada yaqinlashtiradi.",
+        "Aniq reja murakkab vazifani yengillashtiradi.",
+        "Yomg'irdan keyin shahar havosi musaffo tortdi.",
+        "Har bir yangi tajriba o'ziga xos bilim beradi.",
+        "Sokinlik bilan ishlash diqqatni mustahkamlaydi.",
+        "Yozilgan natijalarni keyinroq ko'rib chiqamiz.",
+        "Tashqarida shamol barglarni yo'l bo'ylab haydadi.",
+        "Ular uchrashuv joyini oldindan kelishib olishdi.",
+        "Yaxshi natijaga erishish uchun izchil mashq zarur."
+      ]
+    };
+    const partyLineCounts = { easy: 3, medium: 10, hard: 30 };
+    const lastPartyPassages = { easy: '', medium: '', hard: '' };
+    const partyRaceDurationMs = 5 * 60 * 1000;
+    let activePartyRoom = null;
+    let activePartyPlayerId = sessionStorage.getItem('tinssPartyPlayerId');
+    let activePartyView = null;
+    let activePartyUnsubscribe = null;
+    let partyRaceTimer = null;
+    let partyRaceStartedAt = 0;
+    let partyRaceFinished = false;
+    let partyRaceEnded = false;
+
+    function escapeHtml(value) {
+      return String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+    }
+
+    function makePartyPassage(difficulty, previousText = '') {
+      const count = partyLineCounts[difficulty];
+      const pool = partyPassagePools[difficulty];
+      let text = '';
+      for (let attempt = 0; attempt < 10; attempt += 1) {
+        const shuffled = [...pool];
+        for (let index = shuffled.length - 1; index > 0; index -= 1) {
+          const other = Math.floor(Math.random() * (index + 1));
+          [shuffled[index], shuffled[other]] = [shuffled[other], shuffled[index]];
+        }
+        text = shuffled.slice(0, count).join('\n');
+        if (text !== lastPartyPassages[difficulty] && text !== previousText) break;
+      }
+      if (text === lastPartyPassages[difficulty] || text === previousText) {
+        for (let start = 0; start <= pool.length - count; start += 1) {
+          const alternative = pool.slice(start, start + count).join('\n');
+          if (alternative !== text && alternative !== previousText) {
+            text = alternative;
+            break;
+          }
+        }
+      }
+      lastPartyPassages[difficulty] = text;
+      return text;
+    }
+
+    function formatRaceTime(seconds) {
+      const wholeSeconds = Math.max(0, Math.ceil(seconds));
+      return `${Math.floor(wholeSeconds / 60)}:${String(wholeSeconds % 60).padStart(2, '0')}`;
+    }
+
+    function createPartyPlayerId() {
+      if (crypto.randomUUID) return crypto.randomUUID();
+      const bytes = new Uint8Array(16);
+      crypto.getRandomValues(bytes);
+      return Array.from(bytes, byte => byte.toString(16).padStart(2, '0')).join('');
+    }
+
+    if (!activePartyPlayerId) {
+      activePartyPlayerId = createPartyPlayerId();
+      sessionStorage.setItem('tinssPartyPlayerId', activePartyPlayerId);
+    }
+
+    async function getPartyBackend() {
+      const backend = window.tinssPartyBackend;
+      if (!backend || !backend.configured) {
+        toastMsg("Poyga serveri sozlanmagan. Firebase sozlash uchun FIREBASE_SETUP.md faylini oching.");
+        return null;
+      }
+      try {
+        await backend.ready;
+        return backend;
+      } catch (error) {
+        console.error('Could not connect to Firebase party rooms.', error);
+        toastMsg("Poyga serveriga ulanib bo‘lmadi. Firebase sozlamalarini tekshiring.");
+        return null;
+      }
+    }
+
+    async function readPartyRoom(code, backend) {
+      try {
+        const room = await backend.getRoom(code);
+        if (!room) return null;
+        if (room.code !== code || !Array.isArray(room.players) || !partyPassages[room.difficulty] ||
+            typeof room.text !== 'string' ||
+            room.text.split('\n').length !== partyLineCounts[room.difficulty] ||
+            !['lobby', 'racing', 'finished'].includes(room.status) ||
+            (room.status !== 'lobby' && (!Number.isFinite(room.startedAt) || room.startedAt <= 0))) {
+          console.error('Firebase returned invalid party room data.', room);
+          return null;
+        }
+        return room;
+      } catch (error) {
+        console.error('Could not read the Firebase party room.', error);
+        throw error;
+      }
+    }
+
+    async function savePartyRoom(room) {
+      const backend = await getPartyBackend();
+      if (!backend) return false;
+      try {
+        await backend.saveRoom(room, activePartyPlayerId);
+        activePartyRoom = room;
+        return true;
+      } catch (error) {
+        console.error('Could not save the Firebase party room.', error);
+        toastMsg("Xona serverga saqlanmadi. Internet va Firebase sozlamalarini tekshiring.");
+        return false;
+      }
+    }
+
+    function toastMsg(message) {
+      toast.textContent = message;
+      toast.classList.remove('hidden');
+      clearTimeout(toastMsg.timer);
+      toastMsg.timer = setTimeout(() => toast.classList.add('hidden'), 2200);
+    }
+
+    function closeModal() {
+      if (activeChallengeTimer) {
+        clearInterval(activeChallengeTimer);
+        activeChallengeTimer = null;
+      }
+      modal.classList.add('hidden');
+      modal.setAttribute('aria-hidden', 'true');
+    }
+
+    function openModal(title, html) {
+      modalTitle.textContent = title;
+      modalContent.innerHTML = html;
+      modal.classList.remove('hidden');
+      modal.setAttribute('aria-hidden', 'false');
+    }
+
+    function renderQuickLobby(selectedName = 'Ariya') {
+      const opponents = [
+        { name: 'Ariya', score: '120 WPM', badge: 'A' },
+        { name: 'Nurbek', score: '112 WPM', badge: 'N' },
+        { name: 'Mavluda', score: '109 WPM', badge: 'M' },
+        { name: 'Timur', score: '96 WPM', badge: 'T' }
+      ];
+
+      activeOpponent = opponents.some(player => player.name === selectedName) ? selectedName : opponents[0].name;
+      const cards = opponents.map(player => `
+        <button type="button" class="opponent-card ${player.name === activeOpponent ? 'active' : ''}" aria-pressed="${player.name === activeOpponent}" data-name="${player.name}">
+          <div class="opp-meta">
+            <div class="opp-avatar">${player.badge}</div>
+            <div>
+              <div class="opp-name">${player.name}</div>
+              <div class="opp-score">${player.score}</div>
+            </div>
+          </div>
+          <div>→</div>
+        </button>
+      `).join('');
+
+      modalContent.innerHTML = `
+        <p style="margin:0;color:rgba(233,238,248,0.8);font-size:0.9rem;line-height:1.6;">Choose a racer and enter a live lobby for a fast speed match. This is a browser demo, but it behaves like a quick online room.</p>
+        <div class="modal-grid">${cards}</div>
+        <button type="button" class="primary-action" id="startQuickRaceBtn">Start race</button>
+      `;
+
+      modalContent.querySelectorAll('.opponent-card').forEach(card => {
+        card.addEventListener('click', () => {
+          modalContent.querySelectorAll('.opponent-card').forEach(item => {
+            item.classList.remove('active');
+            item.setAttribute('aria-pressed', 'false');
+          });
+          card.classList.add('active');
+          card.setAttribute('aria-pressed', 'true');
+          activeOpponent = card.dataset.name;
+        });
+      });
+
+      document.getElementById('startQuickRaceBtn').addEventListener('click', () => {
+        openTypingChallenge(`Quick race vs ${activeOpponent}`);
+      });
+    }
+
+    function renderSoloLobby() {
+      modalContent.innerHTML = `
+        <p style="margin:0;color:rgba(233,238,248,0.8);font-size:0.9rem;line-height:1.6;">Train alone, build your rhythm, and track speed and accuracy without pressure.</p>
+        <button type="button" class="primary-action" id="startSoloBtn">Start solo practice</button>
+      `;
+      document.getElementById('startSoloBtn').addEventListener('click', () => {
+        openTypingChallenge('Solo practice');
+      });
+    }
+
+    function renderPartyLobby() {
+      modalTitle.textContent = 'Do‘stlar bilan poyga';
+      modalContent.innerHTML = `
+        <p style="margin:0;color:rgba(233,238,248,0.8);font-size:0.9rem;line-height:1.6;">Xona yarating va kodni do‘stlaringizga yuboring yoki do‘stingiz bergan kodni kiriting.</p>
+        <div class="party-actions">
+          <button type="button" class="primary-action" id="showCreatePartyBtn">Xona yaratish</button>
+          <button type="button" class="party-secondary-action" id="showJoinPartyBtn">Kod bilan kirish</button>
+        </div>
+        <p class="party-helper">Firebase sozlangach, do‘stlaringiz kod bilan boshqa qurilmadan ham qo‘shila oladi.</p>
+      `;
+      document.getElementById('showCreatePartyBtn').addEventListener('click', renderPartyCreateForm);
+      document.getElementById('showJoinPartyBtn').addEventListener('click', renderPartyJoinForm);
+    }
+
+    function renderPartyCreateForm() {
+      modalTitle.textContent = 'Yangi xona';
+      modalContent.innerHTML = `
+        <div class="party-actions">
+          <label class="party-field">Qiyinlik darajasi
+            <select id="partyDifficulty">
+              <option value="easy">Oson — 3 qatorgacha</option>
+              <option value="medium">O‘rtacha — 10 qator</option>
+              <option value="hard">Qiyin — 30 qator</option>
+            </select>
+          </label>
+          <button type="button" class="primary-action" id="createPartyRoomBtn">Xona yaratish va kod olish</button>
+          <button type="button" class="party-secondary-action" id="backToPartyChoicesBtn">Ortga</button>
+        </div>
+      `;
+      document.getElementById('createPartyRoomBtn').addEventListener('click', () => {
+        createPartyRoom(document.getElementById('partyDifficulty').value);
+      });
+      document.getElementById('backToPartyChoicesBtn').addEventListener('click', renderPartyLobby);
+    }
+
+    function renderPartyJoinForm() {
+      modalTitle.textContent = 'Xonaga kod bilan kirish';
+      modalContent.innerHTML = `
+        <div class="party-actions">
+          <label class="party-field" for="partyJoinCode">Do‘stingiz yuborgan xona kodi
+            <input id="partyJoinCode" type="text" inputmode="text" autocomplete="off" maxlength="6" placeholder="Masalan: A4K7P9" aria-describedby="partyCodeHelp">
+          </label>
+          <p class="party-helper" id="partyCodeHelp">Kod 6 ta harf yoki raqamdan iborat.</p>
+          <button type="button" class="primary-action" id="joinPartyRoomBtn">Xonaga kirish</button>
+          <button type="button" class="party-secondary-action" id="backToPartyChoicesBtn">Ortga</button>
+        </div>
+      `;
+      const codeInput = document.getElementById('partyJoinCode');
+      codeInput.addEventListener('input', () => {
+        codeInput.value = codeInput.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6);
+      });
+      document.getElementById('joinPartyRoomBtn').addEventListener('click', () => joinPartyRoom(codeInput.value));
+      codeInput.addEventListener('keydown', event => {
+        if (event.key === 'Enter') joinPartyRoom(codeInput.value);
+      });
+      document.getElementById('backToPartyChoicesBtn').addEventListener('click', renderPartyLobby);
+    }
+
+    async function createPartyRoom(difficulty) {
+      if (!partyPassages[difficulty]) {
+        toastMsg('Qiyinlik darajasini tanlang.');
+        return;
+      }
+      const backend = await getPartyBackend();
+      if (!backend) return;
+      const name = profileName.value.trim() || 'Mehmon';
+      let code = '';
+      try {
+        for (let attempt = 0; attempt < 8; attempt++) {
+          const values = new Uint32Array(6);
+          crypto.getRandomValues(values);
+          const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+          code = Array.from(values, value => alphabet[value % alphabet.length]).join('');
+          if (!await backend.getRoom(code)) break;
+          code = '';
+        }
+      } catch (error) {
+        console.error('Could not generate a Firebase party room.', error);
+        toastMsg("Poyga serveriga ulanib bo‘lmadi. Firebase sozlamalarini tekshiring.");
+        return;
+      }
+      if (!code) {
+        toastMsg('Xona kodi yaratilmadi. Qayta urinib ko‘ring.');
+        return;
+      }
+      const room = {
+        code,
+        difficulty,
+        text: makePartyPassage(difficulty),
+        hostId: activePartyPlayerId,
+        status: 'lobby',
+        players: [{
+          id: activePartyPlayerId,
+          name,
+          progress: 0,
+          wpm: 0,
+          accuracy: 100,
+          finished: false
+        }]
+      };
+      if (!await savePartyRoom(room)) return;
+      partyRaceStartedAt = 0;
+      partyRaceFinished = false;
+      partyRaceEnded = false;
+      await enterPartyScreen('lobby');
+      closeModal();
+    }
+
+    async function joinPartyRoom(rawCode) {
+      const code = rawCode.trim().toUpperCase();
+      if (!/^[A-Z0-9]{6}$/.test(code)) {
+        toastMsg('Xona kodi 6 ta harf yoki raqamdan iborat bo‘lishi kerak.');
+        return;
+      }
+      const backend = await getPartyBackend();
+      if (!backend) return;
+      let room;
+      try {
+        room = await readPartyRoom(code, backend);
+      } catch (error) {
+        toastMsg("Poyga serveriga ulanib bo‘lmadi. Internet va Firebase sozlamalarini tekshiring.");
+        return;
+      }
+      if (!room) {
+        toastMsg('Bunday faol xona topilmadi. Kodni tekshiring yoki xona egasidan yangisini so‘rang.');
+        return;
+      }
+      if (room.status === 'racing' && Date.now() - room.startedAt >= partyRaceDurationMs) {
+        room.status = 'finished';
+        await savePartyRoom(room);
+        toastMsg('Bu poyganing vaqti tugagan. Yangi xona yarating.');
+        return;
+      }
+      if (room.status !== 'lobby' && room.status !== 'racing') {
+        toastMsg('Bu xona endi faol emas. Yangi xona yarating.');
+        return;
+      }
+      let player = room.players.find(item => item.id === activePartyPlayerId);
+      if (!player) {
+        if (room.players.length >= 8) {
+          toastMsg('Xona to‘la. Boshqa xona kodini so‘rang.');
+          return;
+        }
+        player = {
+          id: activePartyPlayerId,
+          name: profileName.value.trim() || 'Mehmon',
+          progress: 0,
+          wpm: 0,
+          accuracy: 100,
+          finished: false
+        };
+        room.players.push(player);
+      }
+      if (!await savePartyRoom(room)) return;
+      partyRaceStartedAt = 0;
+      partyRaceFinished = false;
+      partyRaceEnded = false;
+      await enterPartyScreen(room.status === 'racing' ? 'race' : 'lobby');
+      closeModal();
+    }
+
+    async function enterPartyScreen(view) {
+      const backend = await getPartyBackend();
+      if (!backend) return;
+      activePartyView = view;
+      document.querySelector('.dashboard').hidden = true;
+      const screen = document.getElementById('partyScreen');
+      screen.hidden = false;
+      renderPartyScreen();
+      if (activePartyUnsubscribe) activePartyUnsubscribe();
+      activePartyUnsubscribe = backend.watchRoom(activePartyRoom.code, syncPartyRoom, error => {
+        console.error('Could not synchronize the Firebase party room.', error);
+        toastMsg("Poyga serveri bilan aloqa uzildi. Internet aloqasini tekshiring.");
+      });
+    }
+
+    function syncPartyRoom(room) {
+      if (!activePartyRoom) return;
+      if (!room) {
+        toastMsg('Xona yopildi yoki topilmadi.');
+        exitPartyScreen();
+        return;
+      }
+      if (JSON.stringify(room) === JSON.stringify(activePartyRoom)) return;
+      const textChanged = room.text !== activePartyRoom.text;
+      activePartyRoom = room;
+      if (room.status === 'racing' && activePartyView !== 'race') {
+        enterPartyScreen('race');
+        return;
+      }
+      if (room.status === 'finished' && activePartyView === 'race') {
+        finishPartyRace();
+      }
+      if (textChanged && room.status === 'racing' && activePartyView === 'race') {
+        partyRaceFinished = false;
+        renderPartyScreen();
+      } else {
+        renderPartyPlayers();
+      }
+    }
+
+    async function exitPartyScreen() {
+      const room = activePartyRoom;
+      if (activePartyUnsubscribe) {
+        activePartyUnsubscribe();
+        activePartyUnsubscribe = null;
+      }
+      activePartyRoom = null;
+      activePartyView = null;
+      partyRaceStartedAt = 0;
+      partyRaceFinished = false;
+      partyRaceEnded = false;
+      clearInterval(partyRaceTimer);
+      partyRaceTimer = null;
+      document.getElementById('partyScreen').hidden = true;
+      document.querySelector('.dashboard').hidden = false;
+      if (room) {
+        const backend = await getPartyBackend();
+        if (backend) {
+          try {
+            await backend.leaveRoom(room.code, activePartyPlayerId);
+          } catch (error) {
+            console.error('Could not leave the Firebase party room.', error);
+            toastMsg("Xonadan chiqishda server bilan aloqa uzildi.");
+          }
+        }
+      }
+    }
+
+    function renderPartyPlayers() {
+      const list = document.getElementById('partyPlayerList');
+      if (!list || !activePartyRoom) return;
+      const players = [...activePartyRoom.players].sort((a, b) => b.progress - a.progress || b.wpm - a.wpm);
+      list.innerHTML = players.map((player, index) => `
+        <div class="party-player-row">
+          <span class="party-player-rank">${index + 1}</span>
+          <div>
+            <div class="party-player-name">${escapeHtml(player.name)}${player.id === activePartyPlayerId ? ' (siz)' : ''}</div>
+            <div class="party-progress-track"><div class="party-progress-fill" style="width:${Math.max(0, Math.min(100, Number(player.progress) || 0))}%"></div></div>
+            <div class="party-player-meta">${player.finished ? 'Marraga yetdi' : `${Math.max(0, Math.min(100, Number(player.progress) || 0))}%`}</div>
+          </div>
+          <span class="party-player-wpm">${Math.max(0, Number(player.wpm) || 0)} WPM</span>
+        </div>
+      `).join('');
+      const count = document.getElementById('partyPlayerCount');
+      if (count) count.textContent = `${players.length}/8`;
+    }
+
+    function renderPartyScreen() {
+      if (!activePartyRoom) return;
+      const screen = document.getElementById('partyScreen');
+      const isHost = activePartyRoom.hostId === activePartyPlayerId;
+      const difficulty = partyDifficultyLabels[activePartyRoom.difficulty] || 'Oson';
+      const isRacing = activePartyView === 'race' || activePartyRoom.status === 'racing' || activePartyRoom.status === 'finished';
+      const raceComplete = activePartyRoom.status === 'finished';
+      if (isRacing) activePartyView = 'race';
+
+      screen.innerHTML = `
+        <div class="party-screen-view">
+          <aside class="party-side">
+            <div class="party-ready">
+              <strong>${raceComplete ? 'Poyga yakunlandi' : isRacing ? 'Poyga boshlandi' : 'Xona tayyor'}</strong>
+              <span>${raceComplete ? 'Vaqt tugadi' : isRacing ? 'Matnni yozib marraga yeting' : 'Do‘stlaringizni kuting'}</span>
+            </div>
+            <section class="party-panel">
+              <div class="party-panel-header"><span>Xona kodi</span><span>${escapeHtml(activePartyRoom.code)}</span></div>
+              <div class="party-panel-body">
+                <p class="party-room-code" id="partyRoomCode">${escapeHtml(activePartyRoom.code)}</p>
+                <p class="party-room-hint">Firebase sozlangan bo‘lsa, do‘stlaringiz shu kod bilan boshqa qurilmadan ham qo‘shila oladi.</p>
+                <div class="party-actions">
+                  <button type="button" class="party-secondary-action" id="leavePartyBtn">Xonadan chiqish</button>
+                </div>
+              </div>
+            </section>
+            <section class="party-panel">
+              <div class="party-panel-header">Poyga ma’lumoti</div>
+              <div class="party-panel-body">
+                <div class="profile-line"><span>Qiyinlik</span><strong>${difficulty}</strong></div>
+                <div class="profile-line"><span>Matn qatorlari</span><strong>${partyLineCounts[activePartyRoom.difficulty]}</strong></div>
+                <div class="profile-line"><span>Ishtirokchilar</span><strong id="partyPlayerCount">${activePartyRoom.players.length}/8</strong></div>
+              </div>
+            </section>
+          </aside>
+          <section class="party-center">
+            <div class="party-snippet-panel">
+              <div class="party-snippet-header"><span>${isRacing ? 'Matn' : 'Poyga matni'}</span><span>${difficulty}</span></div>
+              <div class="party-snippet-content" id="partySnippet"></div>
+            </div>
+            ${isRacing ? `
+              <textarea class="party-typing-input" id="partyTypingInput" placeholder="Poyga boshlandi — matnni shu yerga yozing..." aria-label="Poyga matnini shu yerga yozing"></textarea>
+              <div class="party-stats">
+                <span>Vaqt: <strong id="partyTimer">5:00</strong></span>
+                <span>Tezlik: <strong id="partyWpm">0 WPM</strong></span>
+                <span>Aniqlik: <strong id="partyAccuracy">100%</strong></span>
+                <span>Xato: <strong id="partyErrors">0</strong></span>
+              </div>
+              ${isHost && !raceComplete ? '<button type="button" class="party-secondary-action" id="changePartyTextBtn">Boshqa matn</button>' : ''}
+            ` : `
+              <div class="party-start-bar">
+                <span class="party-start-hint">${isHost ? 'Hammaning tayyorligini tekshirib, poygani boshlang.' : 'Xona egasi poygani boshlashini kuting.'}</span>
+                ${isHost ? '<button type="button" class="primary-action" id="startPartyRaceBtn">Poygani boshlash</button>' : ''}
+              </div>
+            `}
+          </section>
+          <aside class="party-side">
+            <section class="party-panel">
+              <div class="party-panel-header"><span>Ishtirokchilar</span><span id="partyPlayerCount">${activePartyRoom.players.length}/8</span></div>
+              <div class="party-panel-body party-player-list" id="partyPlayerList"></div>
+            </section>
+          </aside>
+        </div>
+      `;
+      renderPartyPlayers();
+      const snippet = document.getElementById('partySnippet');
+      snippet.textContent = activePartyRoom.text;
+      document.getElementById('leavePartyBtn').addEventListener('click', exitPartyScreen);
+      const startButton = document.getElementById('startPartyRaceBtn');
+      if (startButton) startButton.addEventListener('click', startPartyRace);
+      const changeTextButton = document.getElementById('changePartyTextBtn');
+      if (changeTextButton) changeTextButton.addEventListener('click', changePartyRaceText);
+      if (isRacing) setupPartyRaceInput();
+    }
+
+    async function startPartyRace() {
+      if (!activePartyRoom || activePartyRoom.hostId !== activePartyPlayerId) {
+        toastMsg('Poygani faqat xona egasi boshlashi mumkin.');
+        return;
+      }
+      if (activePartyRoom.status !== 'lobby') return;
+      activePartyRoom.status = 'racing';
+      activePartyRoom.startedAt = Date.now();
+      activePartyRoom.players.forEach(player => {
+        player.progress = 0;
+        player.wpm = 0;
+        player.accuracy = 100;
+        player.finished = false;
+        delete player.startedAt;
+      });
+      partyRaceStartedAt = activePartyRoom.startedAt;
+      partyRaceEnded = false;
+      if (!await savePartyRoom(activePartyRoom)) return;
+      await enterPartyScreen('race');
+    }
+
+    async function changePartyRaceText() {
+      if (!activePartyRoom || activePartyRoom.status !== 'racing' || activePartyRoom.hostId !== activePartyPlayerId) {
+        toastMsg('Poyga matnini faqat xona egasi almashtira oladi.');
+        return;
+      }
+      activePartyRoom.text = makePartyPassage(activePartyRoom.difficulty, activePartyRoom.text);
+      activePartyRoom.players.forEach(player => {
+        player.progress = 0;
+        player.wpm = 0;
+        player.accuracy = 100;
+        player.finished = false;
+        delete player.startedAt;
+      });
+      partyRaceFinished = false;
+      if (!await savePartyRoom(activePartyRoom)) return;
+      renderPartyScreen();
+    }
+
+    async function finishPartyRace() {
+      if (partyRaceEnded) return;
+      partyRaceEnded = true;
+      partyRaceFinished = true;
+      clearInterval(partyRaceTimer);
+      partyRaceTimer = null;
+      if (activePartyRoom && activePartyRoom.status !== 'finished') {
+        activePartyRoom.status = 'finished';
+        await savePartyRoom(activePartyRoom);
+      }
+      const input = document.getElementById('partyTypingInput');
+      if (input) input.disabled = true;
+      const timer = document.getElementById('partyTimer');
+      if (timer) timer.textContent = '0:00';
+      renderPartyPlayers();
+      toastMsg('Poyga vaqti tugadi. Yangi xona yaratib qayta boshlashingiz mumkin.');
+    }
+
+    function setupPartyRaceInput() {
+      const input = document.getElementById('partyTypingInput');
+      if (!input) return;
+      const text = activePartyRoom.text;
+      const timer = document.getElementById('partyTimer');
+      const updateTimer = () => {
+        const elapsed = Date.now() - activePartyRoom.startedAt;
+        const remaining = Math.max(0, partyRaceDurationMs - elapsed);
+        if (timer) timer.textContent = formatRaceTime(remaining / 1000);
+        if (remaining <= 0 || activePartyRoom.status === 'finished') finishPartyRace();
+      };
+      const renderText = () => {
+        if (partyRaceFinished) return;
+        const typed = input.value;
+        document.getElementById('partySnippet').innerHTML = Array.from(text).map((character, index) => {
+          const visibleCharacter = character === '\n' ? '<br>' : character === ' ' ? '&nbsp;' : escapeHtml(character);
+          if (typed[index] == null) return index === typed.length ? `<span class="current">${visibleCharacter}</span>` : visibleCharacter;
+          return `<span class="${typed[index] === character ? 'correct' : 'wrong'}">${visibleCharacter}</span>`;
+        }).join('');
+
+        const correct = Array.from(typed).reduce((total, character, index) => total + (character === text[index] ? 1 : 0), 0);
+        const errors = typed.length - correct;
+        const player = activePartyRoom.players.find(item => item.id === activePartyPlayerId);
+        if (!player) {
+          toastMsg('Xonadagi ishtirokchi topilmadi. Kod bilan qayta kiring.');
+          exitPartyScreen();
+          return;
+        }
+        if (!player.startedAt && typed.length) player.startedAt = Date.now();
+        const elapsedMinutes = player.startedAt ? Math.max((Date.now() - player.startedAt) / 60000, 1 / 60) : 0;
+        const wpm = player.startedAt ? Math.round((correct / 5) / elapsedMinutes) : 0;
+        const progress = text.length ? Math.floor((Math.min(typed.length, text.length) / text.length) * 100) : 0;
+        const accuracy = typed.length ? Math.round((correct / typed.length) * 100) : 100;
+        partyRaceFinished = typed.length >= text.length;
+        input.disabled = partyRaceFinished;
+        player.progress = progress;
+        player.wpm = wpm;
+        player.accuracy = accuracy;
+        player.finished = partyRaceFinished;
+        void savePartyRoom(activePartyRoom);
+        document.getElementById('partyWpm').textContent = `${wpm} WPM`;
+        document.getElementById('partyAccuracy').textContent = `${accuracy}%`;
+        document.getElementById('partyErrors').textContent = errors;
+        renderPartyPlayers();
+        if (partyRaceFinished) toastMsg(`Marraga yetdingiz! ${wpm} WPM, ${accuracy}% aniqlik.`);
+      };
+      input.addEventListener('beforeinput', event => {
+        if (event.inputType === 'insertFromPaste' || event.inputType === 'insertFromDrop') {
+          event.preventDefault();
+          toastMsg('Poygada matnni qo‘lda yozing — nusxalab qo‘yish o‘chirilgan.');
+        }
+      });
+      input.addEventListener('paste', event => event.preventDefault());
+      input.addEventListener('drop', event => event.preventDefault());
+      input.addEventListener('input', renderText);
+      renderText();
+      updateTimer();
+      clearInterval(partyRaceTimer);
+      if (!partyRaceEnded) {
+        partyRaceTimer = setInterval(updateTimer, 200);
+        if (!partyRaceFinished) input.focus();
+      }
+    }
+
+    function showRenderedModal(title) {
+      modalTitle.textContent = title;
+      modal.classList.remove('hidden');
+      modal.setAttribute('aria-hidden', 'false');
+    }
+
+    function renderModalForMode(mode) {
+      if (mode === 'quick') {
+        renderQuickLobby();
+        showRenderedModal('Race lobby');
+      } else if (mode === 'solo') {
+        renderSoloLobby();
+        showRenderedModal('Solo practice');
+      } else {
+        renderPartyLobby();
+        showRenderedModal('Do‘stlar bilan poyga');
+      }
+    }
+
+    function openTypingChallenge(title) {
+      const availablePassages = defaultPassages.filter(passage => passage !== lastDefaultPassage);
+      let text = availablePassages[Math.floor(Math.random() * availablePassages.length)];
+      lastDefaultPassage = text;
+      const screen = document.getElementById('partyScreen');
+      const isSolo = title.toLowerCase().includes('solo');
+      closeModal();
+      activePartyRoom = null;
+      activePartyView = null;
+      partyRaceEnded = false;
+      partyRaceFinished = false;
+      document.querySelector('.dashboard').hidden = true;
+      screen.hidden = false;
+      screen.innerHTML = `
+        <div class="party-screen-view">
+          <aside class="party-side">
+            <div class="party-ready">
+              <strong>Poyga boshlandi</strong>
+              <span>${escapeHtml(title)}</span>
+            </div>
+            <section class="party-panel">
+              <div class="party-panel-header"><span>Poyga ma’lumoti</span><span>5:00</span></div>
+              <div class="party-panel-body">
+                <div class="profile-line"><span>Rejim</span><strong>${isSolo ? 'Yakka mashq' : 'Tezkor poyga'}</strong></div>
+                <div class="profile-line"><span>Ism</span><strong>${escapeHtml(profileName.value.trim() || 'Mehmon')}</strong></div>
+                <div class="profile-line"><span>Vaqt</span><strong>5 daqiqa</strong></div>
+                <button type="button" class="party-secondary-action" id="changePracticeTextBtn">Boshqa matn</button>
+                <button type="button" class="party-secondary-action" id="practiceHomeBtn">Asosiy menyu</button>
+              </div>
+            </section>
+          </aside>
+          <section class="party-center">
+            <div class="party-snippet-panel">
+              <div class="party-snippet-header"><span>Matn</span><span>${isSolo ? 'Yakka' : 'Tezkor'}</span></div>
+              <div class="party-snippet-content" id="typingSentence"></div>
+            </div>
+            <textarea class="party-typing-input" id="typingInput" placeholder="Matnni shu yerga yozing..." aria-label="Poyga matnini shu yerga yozing"></textarea>
+            <div class="party-stats">
+              <span>Vaqt: <strong id="challengeTimer">5:00</strong></span>
+              <span>Tezlik: <strong id="wpmValue">0 WPM</strong></span>
+              <span>Aniqlik: <strong id="accuracyValue">100%</strong></span>
+              <span>Xato: <strong id="errorValue">0</strong></span>
+            </div>
+          </section>
+          <aside class="party-side">
+            <section class="party-panel">
+              <div class="party-panel-header"><span>Ishtirokchilar</span><span id="practiceProgress">0%</span></div>
+              <div class="party-panel-body party-player-list" id="practicePlayerList"></div>
+            </section>
+          </aside>
+        </div>
+      `;
+      const sentenceEl = document.getElementById('typingSentence');
+      const inputEl = document.getElementById('typingInput');
+      const wpmValue = document.getElementById('wpmValue');
+      const accuracyValue = document.getElementById('accuracyValue');
+      const errorValue = document.getElementById('errorValue');
+      const timerEl = document.getElementById('challengeTimer');
+      const playerList = document.getElementById('practicePlayerList');
+      const playerName = profileName.value.trim() || 'Mehmon';
+      const startedAt = Date.now();
+      let typed = '';
+      let finished = false;
+      const durationSeconds = 5 * 60;
+
+      function renderSentence() {
+        sentenceEl.innerHTML = Array.from(text).map((char, index) => {
+          const typedChar = typed[index];
+          if (typedChar == null) {
+            if (index === typed.length && !finished) return `<span class="current">${char === ' ' ? '&nbsp;' : escapeHtml(char)}</span>`;
+            return char === ' ' ? '&nbsp;' : escapeHtml(char);
+          }
+          if (typedChar === char) return `<span class="correct">${char === ' ' ? '&nbsp;' : escapeHtml(char)}</span>`;
+          return `<span class="wrong">${char === ' ' ? '&nbsp;' : escapeHtml(char)}</span>`;
+        }).join('');
+      }
+
+      function updateMetrics() {
+        let correct = 0;
+        let errors = 0;
+        for (let i = 0; i < typed.length; i++) {
+          if (typed[i] === text[i]) correct++;
+          else errors++;
+        }
+        const minutes = Math.max((Date.now() - startedAt) / 60000, 1 / 60);
+        const wpm = Math.max(0, Math.round((correct / 5) / minutes));
+        const accuracy = typed.length ? Math.round((correct / typed.length) * 100) : 100;
+        const progress = text.length ? Math.floor((Math.min(typed.length, text.length) / text.length) * 100) : 0;
+        wpmValue.textContent = `${wpm} WPM`;
+        accuracyValue.textContent = `${accuracy}%`;
+        errorValue.textContent = errors;
+        document.getElementById('practiceProgress').textContent = `${progress}%`;
+        playerList.innerHTML = `
+          <div class="party-player-row">
+            <span class="party-player-rank">1</span>
+            <div>
+              <div class="party-player-name">${escapeHtml(playerName)} (siz)</div>
+              <div class="party-progress-track"><div class="party-progress-fill" style="width:${progress}%"></div></div>
+              <div class="party-player-meta">${finished ? 'Marraga yetdi' : `${progress}%`}</div>
+            </div>
+            <span class="party-player-wpm">${wpm} WPM</span>
+          </div>
+        `;
+      }
+
+      function finishChallenge() {
+        if (finished) return;
+        finished = true;
+        clearInterval(activeChallengeTimer);
+        activeChallengeTimer = null;
+        let correct = 0;
+        let errors = 0;
+        for (let i = 0; i < typed.length; i++) {
+          if (typed[i] === text[i]) correct++;
+          else errors++;
+        }
+        const minutes = Math.max((Date.now() - startedAt) / 60000, 1 / 60);
+        const wpm = Math.max(0, Math.round((correct / 5) / minutes));
+        const accuracy = typed.length ? Math.round((correct / typed.length) * 100) : 100;
+        inputEl.disabled = true;
+        renderSentence();
+        updateMetrics();
+        toastMsg(typed.length >= text.length ? `Marraga yetdingiz! ${wpm} WPM, ${accuracy}% aniqlik.` : `Vaqt tugadi. ${wpm} WPM, ${accuracy}% aniqlik.`);
+      }
+
+      document.getElementById('changePracticeTextBtn').addEventListener('click', () => {
+        const nextPassages = defaultPassages.filter(passage => passage !== text);
+        const nextText = nextPassages[Math.floor(Math.random() * nextPassages.length)];
+        text = nextText;
+        lastDefaultPassage = nextText;
+        typed = '';
+        inputEl.value = '';
+        finished = false;
+        inputEl.disabled = false;
+        renderSentence();
+        updateMetrics();
+        inputEl.focus();
+      });
+
+      inputEl.addEventListener('input', () => {
+        typed = inputEl.value;
+        renderSentence();
+        updateMetrics();
+        if (typed.length >= text.length) finishChallenge();
+      });
+      inputEl.addEventListener('beforeinput', event => {
+        if (event.inputType === 'insertFromPaste' || event.inputType === 'insertFromDrop') {
+          event.preventDefault();
+          toastMsg('Matnni qo‘lda yozing — qo‘yib yuborish o‘chirilgan.');
+        }
+      });
+      inputEl.addEventListener('paste', event => event.preventDefault());
+      inputEl.addEventListener('drop', event => event.preventDefault());
+
+      activeChallengeTimer = setInterval(() => {
+        if (finished) return;
+        const timeLeft = Math.max(0, durationSeconds - Math.floor((Date.now() - startedAt) / 1000));
+        timerEl.textContent = formatRaceTime(timeLeft);
+        if (timeLeft <= 0) finishChallenge();
+      }, 200);
+
+      document.getElementById('practiceHomeBtn').addEventListener('click', exitPracticeRace);
+      renderSentence();
+      updateMetrics();
+      inputEl.focus();
+    }
+
+    function exitPracticeRace() {
+      if (activeChallengeTimer) {
+        clearInterval(activeChallengeTimer);
+        activeChallengeTimer = null;
+      }
+      document.getElementById('partyScreen').hidden = true;
+      document.querySelector('.dashboard').hidden = false;
+      activePartyView = null;
+    }
+
+    document.querySelectorAll('a[href="#home"]').forEach(link => {
+      link.addEventListener('click', () => {
+        if (activePartyRoom) exitPartyScreen();
+        else if (!document.getElementById('partyScreen').hidden) exitPracticeRace();
+      });
+    });
+
+    document.addEventListener('copy', event => {
+      event.preventDefault();
+      toastMsg('Sayt matnini nusxalash o‘chirilgan.');
+    }, true);
+    document.addEventListener('cut', event => event.preventDefault(), true);
+    document.addEventListener('contextmenu', event => event.preventDefault(), true);
+
+    document.getElementById('closeModal').addEventListener('click', closeModal);
+    modal.addEventListener('click', event => {
+      if (event.target === modal) closeModal();
+    });
+
+    document.querySelectorAll('.action-card').forEach(button => {
+      button.addEventListener('click', () => renderModalForMode(button.dataset.mode));
+    });
+
+    document.getElementById('playFriendsBtn').addEventListener('click', () => {
+      renderModalForMode('party');
+    });
+
+    document.getElementById('globalRacesBtn').addEventListener('click', () => {
+      renderModalForMode('quick');
+    });
+
+    document.getElementById('loginBtn').addEventListener('click', () => {
+      openModal('Log in', `
+        <div style="display:grid;gap:12px;">
+          <label style="display:grid;gap:8px;color:rgba(233,238,248,0.8);font-size:0.8rem;letter-spacing:0.08em;text-transform:uppercase;">
+            Username
+            <input id="accountName" type="text" autocomplete="username" required style="height:42px;border-radius:10px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.02);color:#fff;padding:0 12px;outline:none;">
+          </label>
+          <label style="display:grid;gap:8px;color:rgba(233,238,248,0.8);font-size:0.8rem;letter-spacing:0.08em;text-transform:uppercase;">
+            Password
+            <input id="accountPassword" type="password" autocomplete="current-password" required minlength="6" style="height:42px;border-radius:10px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.02);color:#fff;padding:0 12px;outline:none;">
+          </label>
+          <button type="button" class="primary-action" id="loginConfirmBtn">Continue</button>
+        </div>
+      `);
+      document.getElementById('accountName').value = profileName.value || 'Ismingiz';
+      document.getElementById('loginConfirmBtn').addEventListener('click', () => {
+        const nameInput = document.getElementById('accountName');
+        const passwordInput = document.getElementById('accountPassword');
+        nameInput.value = nameInput.value.trim();
+        if (!nameInput.reportValidity() || !passwordInput.reportValidity()) return;
+        saveProfileName(nameInput.value.trim());
+        closeModal();
+        toastMsg('Demo profile saved on this device.');
+      });
+    });
+
+    document.getElementById('signupBtn').addEventListener('click', () => {
+      openModal('Sign up', `
+        <div style="display:grid;gap:12px;">
+          <label style="display:grid;gap:8px;color:rgba(233,238,248,0.8);font-size:0.8rem;letter-spacing:0.08em;text-transform:uppercase;">
+            Create username
+            <input id="accountName" type="text" autocomplete="username" required style="height:42px;border-radius:10px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.02);color:#fff;padding:0 12px;outline:none;">
+          </label>
+          <label style="display:grid;gap:8px;color:rgba(233,238,248,0.8);font-size:0.8rem;letter-spacing:0.08em;text-transform:uppercase;">
+            Password
+            <input id="accountPassword" type="password" autocomplete="new-password" required minlength="6" style="height:42px;border-radius:10px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.02);color:#fff;padding:0 12px;outline:none;">
+          </label>
+          <button type="button" class="primary-action" id="signupConfirmBtn">Create account</button>
+        </div>
+      `);
+      document.getElementById('accountName').value = profileName.value || 'Ismingiz';
+      document.getElementById('signupConfirmBtn').addEventListener('click', () => {
+        const nameInput = document.getElementById('accountName');
+        const passwordInput = document.getElementById('accountPassword');
+        nameInput.value = nameInput.value.trim();
+        if (!nameInput.reportValidity() || !passwordInput.reportValidity()) return;
+        saveProfileName(nameInput.value.trim());
+        closeModal();
+        toastMsg('Demo profile created on this device.');
+      });
+    });
+
+    document.getElementById('recentMatchesBtn').addEventListener('click', () => {
+      openModal('Recent Matches', `
+        <div style="display:grid;gap:10px;">
+          <button type="button" class="opponent-card" data-replay-name="Ariya"><span class="opp-meta"><span class="opp-avatar">A</span><span><span class="opp-name">Ariya</span><span class="opp-score">94 WPM • 98%</span></span></span><span>Play again →</span></button>
+          <button type="button" class="opponent-card" data-replay-name="Nurbek"><span class="opp-meta"><span class="opp-avatar">N</span><span><span class="opp-name">Nurbek</span><span class="opp-score">91 WPM • 96%</span></span></span><span>Play again →</span></button>
+          <button type="button" class="opponent-card" data-replay-name="Mavluda"><span class="opp-meta"><span class="opp-avatar">M</span><span><span class="opp-name">Mavluda</span><span class="opp-score">88 WPM • 94%</span></span></span><span>Play again →</span></button>
+        </div>
+      `);
+      modalContent.querySelectorAll('[data-replay-name]').forEach(button => {
+        button.addEventListener('click', () => {
+          openTypingChallenge(`Rematch vs ${button.dataset.replayName}`);
+        });
+      });
+    });
+
+    function saveProfileName(name) {
+      profileName.value = name;
+      localStorage.setItem('tinssName', name);
+      document.querySelector('.avatar').textContent = name.charAt(0).toUpperCase();
+    }
+
+    profileName.addEventListener('input', () => {
+      const value = profileName.value.trim() || 'Ismingiz';
+      localStorage.setItem('tinssName', value);
+      document.querySelector('.avatar').textContent = value.charAt(0).toUpperCase();
+    });
+
+    document.getElementById('viewAllPosts').addEventListener('click', event => {
+      event.preventDefault();
+      openModal('Recent Posts', `<div class="feed-list">${document.querySelector('.feed-list').innerHTML}</div>`);
+    });
+
+    document.addEventListener('click', event => {
+      if (!(event.target instanceof Element)) return;
+      const likeButton = event.target.closest('.like-btn');
+      if (!likeButton) return;
+      const liked = likeButton.getAttribute('aria-pressed') === 'true';
+      const count = likeButton.parentElement.querySelector('.like-count');
+      const currentCount = Number(count.textContent);
+      count.textContent = String(currentCount + (liked ? -1 : 1));
+      likeButton.setAttribute('aria-pressed', String(!liked));
+      likeButton.setAttribute('aria-label', liked ? 'Like post' : 'Unlike post');
+    });
+
+    document.getElementById('searchInput').addEventListener('keydown', event => {
+      if (event.key !== 'Enter') return;
+      const query = event.currentTarget.value.trim().toLowerCase();
+      const players = ['Ariya', 'Nurbek', 'Mavluda', 'Timur'];
+      const matches = players.filter(name => name.toLowerCase().includes(query));
+      if (!query || !matches.length) {
+        toastMsg(query ? `No racers found for “${query}”` : 'Enter a player name to search.');
+        return;
+      }
+      renderQuickLobby(matches[0]);
+      modalTitle.textContent = 'Player search';
+      modal.classList.remove('hidden');
+      modal.setAttribute('aria-hidden', 'false');
+      if (matches.length > 1) toastMsg(`${matches.length} racers found. Choose one to continue.`);
+    });
+
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && !modal.classList.contains('hidden')) closeModal();
+    });
+
+  </script>
+  <script type="module" src="./firebase-backend.js"></script>
+</body>
+</html>
